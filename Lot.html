@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lot — Real Madrid 2023/24</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:#C8A84B; --gold-dim:#8A6E2A; --white:#F8F4EC;
+    --black:#050505; --dark:#0D0D0D; --mid:#1A1A1A;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black);color:var(--white);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none;}
+
+  .cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;}
+  .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid rgba(200,168,75,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .1s ease;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 60px;height:72px;display:flex;justify-content:space-between;align-items:center;background:rgba(5,5,5,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,168,75,.08);}
+  .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--gold);text-decoration:none;}
+  .nav-center{display:flex;gap:2px;background:rgba(255,255,255,.03);border:1px solid rgba(200,168,75,.1);padding:4px;border-radius:2px;}
+  .nav-center a{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.45);text-decoration:none;padding:8px 22px;transition:color .2s,background .2s;cursor:none;border-radius:1px;}
+  .nav-center a:hover,.nav-center a.active{color:var(--gold);background:rgba(200,168,75,.08);}
+  .nav-back{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.35);text-decoration:none;transition:color .2s;cursor:none;}
+  .nav-back:hover{color:var(--gold);}
+
+  /* HERO */
+  .page-hero{min-height:60vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 10% 70px;position:relative;overflow:hidden;background:var(--black);}
+  .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 70%, rgba(200,168,75,.05),transparent);}
+
+  /* Field visual decoration */
+  .field-deco{position:absolute;right:8%;top:50%;transform:translateY(-50%);width:420px;height:280px;border:1px solid rgba(200,168,75,.08);border-radius:8px;opacity:.5;}
+  .field-deco::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(200,168,75,.1);transform:translateX(-50%);}
+  .field-deco::after{content:'';position:absolute;top:50%;left:50%;width:100px;height:100px;border:1px solid rgba(200,168,75,.12);border-radius:50%;transform:translate(-50%,-50%);}
+
+  .page-hero-eyebrow{position:relative;z-index:2;font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;animation:fadeUp .8s ease both;}
+  .page-hero-title{position:relative;z-index:2;font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,9vw,120px);line-height:.88;letter-spacing:2px;animation:fadeUp .8s ease .15s both;}
+  .page-hero-title .g{color:var(--gold);}
+  .page-hero-title .outline{-webkit-text-stroke:1px rgba(248,244,236,.2);color:transparent;}
+  .page-hero-sub{position:relative;z-index:2;font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:rgba(248,244,236,.4);margin-top:18px;max-width:480px;line-height:1.7;animation:fadeUp .8s ease .3s both;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+  /* FILTER BAR */
+  .filter-bar{background:var(--mid);border-bottom:1px solid rgba(200,168,75,.08);padding:0 10%;display:flex;gap:4px;overflow-x:auto;}
+  .filter-btn{font-family:'Rajdhani',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.4);padding:18px 24px;border:none;background:none;cursor:none;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap;}
+  .filter-btn:hover,.filter-btn.active{color:var(--gold);border-bottom-color:var(--gold);}
+
+  /* SQUAD GRID */
+  .squad-section{padding:80px 10%;}
+
+  .position-group{margin-bottom:70px;}
+  .pos-label{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:6px;text-transform:uppercase;color:rgba(200,168,75,.5);border-bottom:1px solid rgba(200,168,75,.08);padding-bottom:14px;margin-bottom:28px;}
+
+  .squad-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;}
+
+  .player-card{
+    background:var(--mid);
+    position:relative;overflow:hidden;
+    transition:transform .3s,border-color .3s;
+    cursor:none;
+    border:1px solid rgba(200,168,75,.06);
+  }
+  .player-card:hover{transform:translateY(-5px);border-color:rgba(200,168,75,.25);}
+  .player-card::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 0%,transparent 55%);pointer-events:none;}
+
+  .player-visual{
+    height:180px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:60px;
+    position:relative;overflow:hidden;
+  }
+  .player-visual::before{
+    content:attr(data-num);
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    font-family:'Bebas Neue',sans-serif;font-size:100px;
+    color:rgba(200,168,75,.06);line-height:1;
+  }
+
+  .player-info{position:absolute;bottom:0;left:0;right:0;padding:14px 16px;z-index:1;}
+  .p-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(200,168,75,.2);line-height:1;margin-bottom:-4px;}
+  .p-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.5px;}
+  .p-nat{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(248,244,236,.35);margin-top:3px;}
+  .p-stat{font-size:12px;color:rgba(248,244,236,.4);margin-top:4px;}
+  .p-stat b{color:var(--gold);}
+
+  /* Nationality badges */
+  .nat-flag{display:inline-block;margin-right:4px;}
+
+  /* Formation visual */
+  .formation-section{background:var(--dark);padding:80px 10%;}
+  .sec-eye{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5vw,72px);line-height:.9;letter-spacing:2px;margin-bottom:32px;}
+  .sec-title .g{color:var(--gold);}
+  .sec-rule{width:50px;height:1px;background:var(--gold-dim);margin-bottom:36px;}
+
+  .formation-visual{
+    max-width:640px;margin:0 auto;
+    background:rgba(200,168,75,.02);
+    border:1px solid rgba(200,168,75,.08);
+    padding:40px 20px;
+    position:relative;
+  }
+  .f-row{display:flex;justify-content:center;gap:30px;margin-bottom:36px;}
+  .f-row:last-child{margin-bottom:0;}
+  .f-player{text-align:center;width:80px;}
+  .f-badge{
+    width:48px;height:48px;border-radius:50%;
+    background:var(--mid);border:2px solid rgba(200,168,75,.3);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;margin:0 auto 6px;
+    transition:border-color .3s,box-shadow .3s;
+    cursor:none;
+  }
+  .f-player:hover .f-badge{border-color:var(--gold);box-shadow:0 0 20px rgba(200,168,75,.3);}
+  .f-name{font-family:'Bebas Neue',sans-serif;font-size:12px;letter-spacing:1px;color:var(--white);}
+  .f-pos{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(200,168,75,.5);}
+
+  /* Stats comparison */
+  .comparison-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px;}
+  .comp-card{background:var(--mid);padding:32px 24px;text-align:center;border-bottom:2px solid transparent;transition:border-color .3s;}
+  .comp-card:hover{border-color:var(--gold);}
+  .comp-emoji{font-size:40px;margin-bottom:12px;}
+  .comp-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--gold);margin-bottom:4px;}
+  .comp-role{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.35);margin-bottom:14px;}
+  .comp-mini-bar-wrap{margin-top:12px;}
+  .comp-mini-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(248,244,236,.4);margin-bottom:4px;letter-spacing:1px;}
+  .comp-mini-track{height:4px;background:rgba(255,255,255,.05);border-radius:2px;overflow:hidden;margin-bottom:8px;}
+  .comp-mini-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold));border-radius:2px;animation:bFill 1.2s cubic-bezier(.16,1,.3,1) both;transform-origin:left;transform:scaleX(0);}
+  @keyframes bFill{to{transform:scaleX(1)}}
+
+  footer{background:var(--black);border-top:1px solid rgba(200,168,75,.1);padding:36px 10%;display:flex;justify-content:space-between;align-items:center;}
+  .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;color:var(--gold);}
+  .footer-text{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(248,244,236,.25);}
+
+  @media(max-width:768px){
+    nav{padding:0 20px;}
+    .nav-center{display:none;}
+    .squad-grid{grid-template-columns:repeat(2,1fr);}
+    .comparison-grid{grid-template-columns:1fr;}
+    footer{flex-direction:column;gap:14px;text-align:center;}
+    .field-deco{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a class="nav-logo" href="ai.html">⚽ REAL MADRID</a>
+  <div class="nav-center">
+    <a href="stadion.html">Stadion</a>
+    <a href="lot.html" class="active">Lot</a>
+    <a href="staff.html">Staff</a>
+  </div>
+  <a class="nav-back" href="index.html">← Înapoi</a>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="field-deco"></div>
+  <div class="page-hero-eyebrow">Lotul 2023 / 2024</div>
+  <h1 class="page-hero-title">
+    <span class="outline">ECHIPA</span><br>
+    <span class="g">CAMPIONILOR</span>
+  </h1>
+  <p class="page-hero-sub">
+    25 de jucători. Un obiectiv. Toate trofeele. Generația care a cucerit Europa din nou.
+  </p>
+</section>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active">Toți</button>
+  <button class="filter-btn">Portari</button>
+  <button class="filter-btn">Fundași</button>
+  <button class="filter-btn">Mijlocași</button>
+  <button class="filter-btn">Atacanți</button>
+</div>
+
+<!-- SQUAD -->
+<div class="squad-section">
+
+  <!-- Portari -->
+  <div class="position-group">
+    <div class="pos-label">Portari</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-visual" data-num="1" style="background:linear-gradient(135deg,#0a0a20,#1a1a3a)">🧤</div>
+        <div class="player-info">
+          <div class="p-num">1</div>
+          <div class="p-name">T. Courtois</div>
+          <div class="p-nat">🇧🇪 Belgia</div>
+          <div class="p-stat">Revenit · <b>Erou final</b></div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="13" style="background:linear-gradient(135deg,#0a0a20,#1a1a3a)">🧤</div>
+        <div class="player-info">
+          <div class="p-num">13</div>
+          <div class="p-name">A. Lunin</div>
+          <div class="p-nat">🇺🇦 Ucraina</div>
+          <div class="p-stat"><b>14</b> meciuri titularizat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fundași -->
+  <div class="position-group">
+    <div class="pos-label">Fundași</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-visual" data-num="2" style="background:linear-gradient(135deg,#1a0500,#3a1000)">🛡️</div>
+        <div class="player-info">
+          <div class="p-num">2</div>
+          <div class="p-name">D. Carvajal</div>
+          <div class="p-nat">🇪🇸 Spania</div>
+          <div class="p-stat"><b>Gol</b> finală UCL · Balonul de Aur</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="3" style="background:linear-gradient(135deg,#001a05,#003a10)">🛡️</div>
+        <div class="player-info">
+          <div class="p-num">3</div>
+          <div class="p-name">Eder Militão</div>
+          <div class="p-nat">🇧🇷 Brazilia</div>
+          <div class="p-stat"><b>Fundaș</b> central titularizat</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="4" style="background:linear-gradient(135deg,#1a0000,#3a0000)">🛡️</div>
+        <div class="player-info">
+          <div class="p-num">4</div>
+          <div class="p-name">D. Alaba</div>
+          <div class="p-nat">🇦🇹 Austria</div>
+          <div class="p-stat"><b>Lider</b> al apărării</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="22" style="background:linear-gradient(135deg,#001a1a,#003a3a)">🛡️</div>
+        <div class="player-info">
+          <div class="p-num">22</div>
+          <div class="p-name">A. Rudiger</div>
+          <div class="p-nat">🇩🇪 Germania</div>
+          <div class="p-stat"><b>Agresivitate</b> și calitate</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="23" style="background:linear-gradient(135deg,#1a1a00,#3a3a00)">🛡️</div>
+        <div class="player-info">
+          <div class="p-num">23</div>
+          <div class="p-name">F. Mendy</div>
+          <div class="p-nat">🇫🇷 Franța</div>
+          <div class="p-stat"><b>Fundaș</b> stânga · rapid</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mijlocași -->
+  <div class="position-group">
+    <div class="pos-label">Mijlocași</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-visual" data-num="14" style="background:linear-gradient(135deg,#00001a,#00003a)">🎯</div>
+        <div class="player-info">
+          <div class="p-num">14</div>
+          <div class="p-name">J. Bellingham</div>
+          <div class="p-nat">🏴󠁧󠁢󠁥󠁮󠁧󠁿 Anglia</div>
+          <div class="p-stat"><b>23</b> goluri · <b>13</b> pase</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="10" style="background:linear-gradient(135deg,#1a0010,#3a0030)">⚙️</div>
+        <div class="player-info">
+          <div class="p-num">10</div>
+          <div class="p-name">L. Modric</div>
+          <div class="p-nat">🇭🇷 Croația</div>
+          <div class="p-stat"><b>6</b> goluri · legendă vie</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="8" style="background:linear-gradient(135deg,#0a1a00,#1a3a00)">⚙️</div>
+        <div class="player-info">
+          <div class="p-num">8</div>
+          <div class="p-name">T. Kroos</div>
+          <div class="p-nat">🇩🇪 Germania</div>
+          <div class="p-stat"><b>Regizor</b> · sezon de adio</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="15" style="background:linear-gradient(135deg,#1a1000,#3a2000)">⚙️</div>
+        <div class="player-info">
+          <div class="p-num">15</div>
+          <div class="p-name">F. Valverde</div>
+          <div class="p-nat">🇺🇾 Uruguay</div>
+          <div class="p-stat"><b>Motor</b> al echipei</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="18" style="background:linear-gradient(135deg,#001a1a,#003030)">⚙️</div>
+        <div class="player-info">
+          <div class="p-num">18</div>
+          <div class="p-name">A. Tchouaméni</div>
+          <div class="p-nat">🇫🇷 Franța</div>
+          <div class="p-stat"><b>Scut</b> al mijlocului</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Atacanți -->
+  <div class="position-group">
+    <div class="pos-label">Atacanți</div>
+    <div class="squad-grid">
+      <div class="player-card">
+        <div class="player-visual" data-num="7" style="background:linear-gradient(135deg,#1a0a00,#3a1500)">⚡</div>
+        <div class="player-info">
+          <div class="p-num">7</div>
+          <div class="p-name">Vinicius Jr.</div>
+          <div class="p-nat">🇧🇷 Brazilia</div>
+          <div class="p-stat"><b>24</b> goluri · <b>11</b> pase</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="11" style="background:linear-gradient(135deg,#001500,#002a00)">🔥</div>
+        <div class="player-info">
+          <div class="p-num">11</div>
+          <div class="p-name">Rodrygo Goes</div>
+          <div class="p-nat">🇧🇷 Brazilia</div>
+          <div class="p-stat"><b>17</b> goluri · <b>9</b> pase</div>
+        </div>
+      </div>
+      <div class="player-card">
+        <div class="player-visual" data-num="9" style="background:linear-gradient(135deg,#1a0015,#3a002a)">⚽</div>
+        <div class="player-info">
+          <div class="p-num">9</div>
+          <div class="p-name">Joselu</div>
+          <div class="p-nat">🇪🇸 Spania</div>
+          <div class="p-stat"><b>11</b> goluri · erou UCL</div>
+        </div>
+      </div>
+   
+   
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORMATION -->
+<section class="formation-section">
+  <div class="sec-eye">Tactică preferată</div>
+  <h2 class="sec-title">FORMAȚIA<br><span class="g">4-3-3</span></h2>
+  <div class="sec-rule"></div>
+  <p style="font-size:15px;color:rgba(248,244,236,.45);max-width:540px;line-height:1.8;margin-bottom:50px;">
+    Ancelotti a folosit cu precădere formația 4-3-3, cu Bellingham liber să atace din dreapta mijlocului. Kroos și Modric controlau ritmul, Valverde aducea dinamismul, iar atacul de trei cu Vinicius, Rodrygo și un vârf mobil a devastat orice apărare.
+  </p>
+  <div class="formation-visual">
+    <!-- GK -->
+    <div class="f-row">
+      <div class="f-player">
+        <div class="f-badge">🧤</div>
+        <div class="f-name">Lunin</div>
+        <div class="f-pos">PO</div>
+      </div>
+    </div>
+    <!-- DEF -->
+    <div class="f-row">
+      <div class="f-player"><div class="f-badge">🛡️</div><div class="f-name">Mendy</div><div class="f-pos">FS</div></div>
+      <div class="f-player"><div class="f-badge">🛡️</div><div class="f-name">Alaba</div><div class="f-pos">FC</div></div>
+      <div class="f-player"><div class="f-badge">🛡️</div><div class="f-name">Rüdiger</div><div class="f-pos">FC</div></div>
+      <div class="f-player"><div class="f-badge">🛡️</div><div class="f-name">Carvajal</div><div class="f-pos">FD</div></div>
+    </div>
+    <!-- MID -->
+    <div class="f-row">
+      <div class="f-player"><div class="f-badge">⚙️</div><div class="f-name">Modric</div><div class="f-pos">MS</div></div>
+      <div class="f-player"><div class="f-badge">⚙️</div><div class="f-name">Tchouaméni</div><div class="f-pos">MC</div></div>
+      <div class="f-player"><div class="f-badge">⚙️</div><div class="f-name">Valverde</div><div class="f-pos">MD</div></div>
+    </div>
+    <!-- ATK -->
+    <div class="f-row">
+      <div class="f-player"><div class="f-badge">⚡</div><div class="f-name">Vinicius</div><div class="f-pos">ES</div></div>
+      <div class="f-player"><div class="f-badge">🎯</div><div class="f-name">Bellingham</div><div class="f-pos">SS</div></div>
+      <div class="f-player"><div class="f-badge">🔥</div><div class="f-name">Rodrygo</div><div class="f-pos">ED</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- TOP 3 COMPARISON -->
+<section style="padding:80px 10%;background:var(--black);">
+  <div class="sec-eye">Performanțe individuale</div>
+  <h2 class="sec-title">TOP 3<br><span class="g">PERFORMERI</span></h2>
+  <div class="sec-rule"></div>
+  <div class="comparison-grid">
+    <div class="comp-card">
+      <div class="comp-emoji">⚡</div>
+      <div class="comp-name">Vinicius Jr.</div>
+      <div class="comp-role">Extremă Stânga</div>
+      <div class="comp-mini-bar-wrap">
+        <div class="comp-mini-label"><span>Goluri</span><span>24</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:92%;animation-delay:.1s"></div></div>
+        <div class="comp-mini-label"><span>Pase decisive</span><span>11</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:65%;animation-delay:.2s"></div></div>
+        <div class="comp-mini-label"><span>Driblinguri reușite</span><span>142</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:95%;animation-delay:.3s"></div></div>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-emoji">🎯</div>
+      <div class="comp-name">J. Bellingham</div>
+      <div class="comp-role">Mijlocaș Central</div>
+      <div class="comp-mini-bar-wrap">
+        <div class="comp-mini-label"><span>Goluri</span><span>23</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:88%;animation-delay:.15s"></div></div>
+        <div class="comp-mini-label"><span>Pase decisive</span><span>13</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:76%;animation-delay:.25s"></div></div>
+        <div class="comp-mini-label"><span>Duele câștigate</span><span>61%</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:61%;animation-delay:.35s"></div></div>
+      </div>
+    </div>
+    <div class="comp-card">
+      <div class="comp-emoji">🔥</div>
+      <div class="comp-name">Rodrygo Goes</div>
+      <div class="comp-role">Extremă Dreaptă</div>
+      <div class="comp-mini-bar-wrap">
+        <div class="comp-mini-label"><span>Goluri</span><span>17</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:65%;animation-delay:.1s"></div></div>
+        <div class="comp-mini-label"><span>Pase decisive</span><span>9</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:53%;animation-delay:.2s"></div></div>
+        <div class="comp-mini-label"><span>Driblinguri reușite</span><span>87</span></div>
+        <div class="comp-mini-track"><div class="comp-mini-fill" style="width:58%;animation-delay:.3s"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">⚽ LOT REAL MADRID</div>
+  <div class="footer-text">Sezonul 2023 / 2024</div>
+  <div style="font-size:18px;letter-spacing:4px">⭐🏆👑</div>
+</footer>
+
+<script>
+  const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  document.addEventListener('mousemove',e=>{
+    cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+    setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},80);
+  });
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

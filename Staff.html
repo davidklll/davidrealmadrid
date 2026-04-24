@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff — Real Madrid</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#C8A84B;--gold-dim:#8A6E2A;--white:#F8F4EC;--black:#050505;--dark:#0D0D0D;--mid:#1A1A1A;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{background:var(--black);color:var(--white);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none;}
+
+  .cursor{position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;}
+  .cursor-ring{position:fixed;width:34px;height:34px;border:1px solid rgba(200,168,75,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .1s ease;}
+
+  nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 60px;height:72px;display:flex;justify-content:space-between;align-items:center;background:rgba(5,5,5,.88);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,168,75,.08);}
+  .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--gold);text-decoration:none;}
+  .nav-center{display:flex;gap:2px;background:rgba(255,255,255,.03);border:1px solid rgba(200,168,75,.1);padding:4px;border-radius:2px;}
+  .nav-center a{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.45);text-decoration:none;padding:8px 22px;transition:color .2s,background .2s;cursor:none;border-radius:1px;}
+  .nav-center a:hover,.nav-center a.active{color:var(--gold);background:rgba(200,168,75,.08);}
+  .nav-back{font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.35);text-decoration:none;transition:color .2s;cursor:none;}
+  .nav-back:hover{color:var(--gold);}
+
+  /* HERO */
+  .page-hero{min-height:65vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 10% 80px;position:relative;overflow:hidden;background:var(--black);}
+  .hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 80%, rgba(200,168,75,.06),transparent);}
+
+  /* Org chart decoration */
+  .org-deco{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:360px;height:260px;opacity:.06;pointer-events:none;}
+
+  .page-hero-eyebrow{position:relative;z-index:2;font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;animation:fadeUp .8s ease both;}
+  .page-hero-title{position:relative;z-index:2;font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,9vw,120px);line-height:.88;letter-spacing:2px;animation:fadeUp .8s ease .15s both;}
+  .page-hero-title .g{color:var(--gold);}
+  .page-hero-title .outline{-webkit-text-stroke:1px rgba(248,244,236,.2);color:transparent;}
+  .page-hero-sub{position:relative;z-index:2;font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:rgba(248,244,236,.4);margin-top:18px;max-width:500px;line-height:1.7;animation:fadeUp .8s ease .3s both;}
+
+  @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+  /* FEATURED MANAGER */
+  .manager-section{background:var(--dark);padding:0;}
+  .manager-hero{
+    display:grid;grid-template-columns:1fr 1fr;
+    min-height:480px;
+  }
+  .manager-left{
+    background:linear-gradient(135deg,#0a0700,#1a1200,#0a0700);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+    font-size:130px;
+  }
+  .manager-left::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(200,168,75,.06),transparent);}
+  .manager-right{padding:60px 60px;display:flex;flex-direction:column;justify-content:center;}
+  .mgr-eyebrow{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;}
+  .mgr-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);line-height:.9;letter-spacing:2px;margin-bottom:14px;}
+  .mgr-name .g{color:var(--gold);}
+  .mgr-sub{font-family:'Cormorant Garamond',serif;font-size:18px;font-style:italic;color:rgba(248,244,236,.4);margin-bottom:32px;line-height:1.7;}
+  .mgr-rule{width:50px;height:1px;background:var(--gold-dim);margin-bottom:28px;}
+  .mgr-body{font-size:15px;line-height:1.8;color:rgba(248,244,236,.5);max-width:520px;}
+  .mgr-trophies{display:flex;gap:16px;margin-top:28px;flex-wrap:wrap;}
+  .mgr-trophy{background:rgba(200,168,75,.06);border:1px solid rgba(200,168,75,.15);padding:8px 16px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+
+  /* Quote */
+  .quote-block{border-left:2px solid var(--gold);padding:22px 32px;margin:32px 0;background:rgba(200,168,75,.03);}
+  .quote-text{font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;color:rgba(248,244,236,.7);line-height:1.6;}
+  .quote-author{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:12px;}
+
+  /* STAFF GRID */
+  .staff-section{padding:90px 10%;}
+  .sec-eye{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  .sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,5vw,72px);line-height:.9;letter-spacing:2px;margin-bottom:32px;}
+  .sec-title .g{color:var(--gold);}
+  .sec-rule{width:50px;height:1px;background:var(--gold-dim);margin-bottom:36px;}
+
+  .staff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:50px;}
+  .staff-card{
+    background:var(--mid);
+    border:1px solid rgba(200,168,75,.06);
+    padding:36px 28px;
+    transition:border-color .3s,background .3s,transform .3s;
+    cursor:none;
+    position:relative;overflow:hidden;
+  }
+  .staff-card::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .4s ease;}
+  .staff-card:hover{border-color:rgba(200,168,75,.2);background:rgba(200,168,75,.02);transform:translateY(-4px);}
+  .staff-card:hover::before{transform:scaleX(1);}
+
+  .staff-icon{font-size:38px;margin-bottom:16px;}
+  .staff-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:var(--white);margin-bottom:4px;}
+  .staff-role{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  .staff-desc{font-size:13px;line-height:1.7;color:rgba(248,244,236,.4);}
+  .staff-nat{font-size:11px;letter-spacing:2px;color:rgba(248,244,236,.25);margin-top:10px;}
+
+  /* Management section */
+  .management-section{background:var(--dark);padding:90px 10%;}
+
+  .mgmt-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;margin-top:50px;}
+  .mgmt-card{
+    background:var(--mid);
+    padding:44px 36px;
+    border:1px solid rgba(200,168,75,.06);
+    display:flex;gap:24px;align-items:flex-start;
+    transition:border-color .3s;cursor:none;
+  }
+  .mgmt-card:hover{border-color:rgba(200,168,75,.2);}
+  .mgmt-avatar{
+    width:64px;height:64px;border-radius:50%;
+    background:rgba(200,168,75,.08);
+    border:2px solid rgba(200,168,75,.2);
+    display:flex;align-items:center;justify-content:center;
+    font-size:28px;flex-shrink:0;
+  }
+  .mgmt-info{}
+  .mgmt-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--gold);margin-bottom:4px;}
+  .mgmt-role{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.35);margin-bottom:10px;}
+  .mgmt-desc{font-size:13px;line-height:1.7;color:rgba(248,244,236,.4);}
+
+  /* UCL Trophies Ancelotti counter */
+  .ancelotti-banner{
+    background:linear-gradient(135deg,#0a0700,#1a1200,#0a0700);
+    padding:70px 10%;text-align:center;
+    border-top:1px solid rgba(200,168,75,.08);
+    border-bottom:1px solid rgba(200,168,75,.08);
+    position:relative;overflow:hidden;
+  }
+  .ancelotti-banner::before{content:'👑';position:absolute;font-size:240px;opacity:.03;top:50%;left:50%;transform:translate(-50%,-50%);}
+  .ab-label{font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
+  .ab-num{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,15vw,160px);color:var(--gold);line-height:1;text-shadow:0 0 60px rgba(200,168,75,.3);}
+  .ab-sub{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;color:rgba(248,244,236,.4);margin-top:12px;}
+  .ab-trophies{margin-top:24px;font-size:32px;letter-spacing:10px;}
+
+  footer{background:var(--black);border-top:1px solid rgba(200,168,75,.1);padding:36px 10%;display:flex;justify-content:space-between;align-items:center;}
+  .footer-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;color:var(--gold);}
+  .footer-text{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(248,244,236,.25);}
+
+  @media(max-width:768px){
+    nav{padding:0 20px;}
+    .nav-center{display:none;}
+    .manager-hero{grid-template-columns:1fr;}
+    .manager-left{min-height:200px;}
+    .manager-right{padding:40px 24px;}
+    .staff-grid{grid-template-columns:1fr;}
+    .mgmt-grid{grid-template-columns:1fr;}
+    footer{flex-direction:column;gap:14px;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a class="nav-logo" href="ai.html">⚽ REAL MADRID</a>
+  <div class="nav-center">
+    <a href="stadion.html">Stadion</a>
+    <a href="lot.html">Lot</a>
+    <a href="staff.html" class="active">Staff</a>
+  </div>
+  <a class="nav-back" href="index.html">← Înapoi</a>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="hero-glow"></div>
+  <!-- Org chart SVG decoration -->
+  <svg class="org-deco" viewBox="0 0 360 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="130" y="10" width="100" height="50" rx="4" stroke="#C8A84B" stroke-width="1.5"/>
+    <line x1="180" y1="60" x2="180" y2="90" stroke="#C8A84B" stroke-width="1"/>
+    <line x1="60" y1="90" x2="300" y2="90" stroke="#C8A84B" stroke-width="1"/>
+    <line x1="60" y1="90" x2="60" y2="110" stroke="#C8A84B" stroke-width="1"/>
+    <line x1="180" y1="90" x2="180" y2="110" stroke="#C8A84B" stroke-width="1"/>
+    <line x1="300" y1="90" x2="300" y2="110" stroke="#C8A84B" stroke-width="1"/>
+    <rect x="10" y="110" width="100" height="44" rx="3" stroke="#C8A84B" stroke-width="1"/>
+    <rect x="130" y="110" width="100" height="44" rx="3" stroke="#C8A84B" stroke-width="1"/>
+    <rect x="250" y="110" width="100" height="44" rx="3" stroke="#C8A84B" stroke-width="1"/>
+    <line x1="60" y1="154" x2="60" y2="180" stroke="#C8A84B" stroke-width=".8" opacity=".6"/>
+    <line x1="180" y1="154" x2="180" y2="180" stroke="#C8A84B" stroke-width=".8" opacity=".6"/>
+    <line x1="300" y1="154" x2="300" y2="180" stroke="#C8A84B" stroke-width=".8" opacity=".6"/>
+    <rect x="15" y="180" width="90" height="36" rx="2" stroke="#C8A84B" stroke-width=".8" opacity=".6"/>
+    <rect x="135" y="180" width="90" height="36" rx="2" stroke="#C8A84B" stroke-width=".8" opacity=".6"/>
+    <rect x="255" y="180" width="90" height="36" rx="2" stroke="#C8A84B" stroke-width=".8" opacity=".6"/>
+  </svg>
+
+  <div class="page-hero-eyebrow">Conducere & Tehnică</div>
+  <h1 class="page-hero-title">
+    <span class="outline">OAMENII</span><br>
+    <span class="g">DIN UMBRĂ</span>
+  </h1>
+  <p class="page-hero-sub">
+    Antrenori, directori, analiști. Cei care construiesc imperiul înainte ca lumina reflectoarelor să se aprindă.
+  </p>
+</section>
+
+<!-- MANAGER FEATURED -->
+<section class="manager-section">
+  <div class="manager-hero">
+    <div class="manager-left">
+      <span style="position:relative;z-index:1">🎩</span>
+    </div>
+    <div class="manager-right">
+      <div class="mgr-eyebrow">Antrenor Principal</div>
+      <h2 class="mgr-name">CARLO<br><span class="g">ANCELOTTI</span></h2>
+      <div class="mgr-rule"></div>
+      <p class="mgr-sub">
+        Il Maestro. Singurul antrenor din istoria fotbalului cu 4 titluri în Champions League.
+      </p>
+      <p class="mgr-body">
+        Revenit pe Bernabéu în 2021, Carlo Ancelotti a transformat un lot talențat dar inconstant într-o mașinărie de câștigat trofee. Filozofia sa — calm, management uman, libertate tactică — a permis starurilor precum Bellingham și Vinicius să-și atingă maximul potențial. Sezonul 2023/24 rămâne opera sa magistrală.
+      </p>
+      <div class="quote-block">
+        <div class="quote-text">"Nu câștigăm pentru că suntem cei mai buni tehnic. Câștigăm pentru că credem până în ultimul minut."</div>
+        <div class="quote-author">Carlo Ancelotti</div>
+      </div>
+      <div class="mgr-trophies">
+        <div class="mgr-trophy">🏆 UCL 2022</div>
+        <div class="mgr-trophy">🏆 UCL 2024</div>
+        <div class="mgr-trophy">👑 La Liga 2022</div>
+        <div class="mgr-trophy">👑 La Liga 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAFF TEHNIC -->
+<section class="staff-section">
+  <div class="sec-eye">Staff Tehnic</div>
+  <h2 class="sec-title">ECHIPA<br><span class="g">TEHNICĂ</span></h2>
+  <div class="sec-rule"></div>
+  <div class="staff-grid">
+    <div class="staff-card">
+      <div class="staff-icon">🎯</div>
+      <div class="staff-name">Davide Ancelotti</div>
+      <div class="staff-role">Antrenor Secund</div>
+      <div class="staff-desc">Fiul lui Carlo, responsabil cu analiza video și coordonarea antrenamentelor. Creierul din spatele setpieselor și pregătirii tactice detaliate.</div>
+      <div class="staff-nat">🇮🇹 Italia</div>
+    </div>
+    <div class="staff-card">
+      <div class="staff-icon">💪</div>
+      <div class="staff-name">Antonio Pintus</div>
+      <div class="staff-role">Preparator Fizic</div>
+      <div class="staff-desc">Legendarul preparator fizic al lui Real Madrid. Responsabil cu vârfurile de formă ale jucătorilor în meciurile decisive din Champions League.</div>
+      <div class="staff-nat">🇮🇹 Italia</div>
+    </div>
+    <div class="staff-card">
+      <div class="staff-icon">🔬</div>
+      <div class="staff-name">Mario Recio</div>
+      <div class="staff-role">Analist Performanță</div>
+      <div class="staff-desc">Coordonează departamentul de analiză. Folosește date avansate pentru a pregăti planuri de joc personalizate contra fiecărui adversar.</div>
+      <div class="staff-nat">🇪🇸 Spania</div>
+    </div>
+    <div class="staff-card">
+      <div class="staff-icon">🧠</div>
+      <div class="staff-name">Francesco Mauri</div>
+      <div class="staff-role">Antrenor Portari</div>
+      <div class="staff-desc">Specialist portari care a contribuit decisiv la revenirea lui Thibaut Courtois și la performanțele remarcabile ale lui Andriy Lunin din sezon.</div>
+      <div class="staff-nat">🇮🇹 Italia</div>
+    </div>
+    <div class="staff-card">
+      <div class="staff-icon">🏥</div>
+      <div class="staff-name">Dr. Óscar Celada</div>
+      <div class="staff-role">Director Medical</div>
+      <div class="staff-desc">Coordonează staff-ul medical de 12 persoane. A supravegheat reabilitarea rapidă a lui Courtois după ruptura de ligamente, o poveste medicală incredibilă.</div>
+      <div class="staff-nat">🇪🇸 Spania</div>
+    </div>
+    <div class="staff-card">
+      <div class="staff-icon">🧘</div>
+      <div class="staff-name">Staff Psihologie</div>
+      <div class="staff-role">Suport Mental</div>
+      <div class="staff-desc">Echipă de 3 psihologi sportivi care lucrează cu jucătorii înainte de meciurile decisive. Factor crucial în „meciurile imposibile" din UCL 2024.</div>
+      <div class="staff-nat">🇪🇸 Spania</div>
+    </div>
+  </div>
+</section>
+
+<!-- Ancelotti UCL banner -->
+<div class="ancelotti-banner">
+  <div class="ab-label">Record absolut în istoria UCL</div>
+  <div class="ab-num">4</div>
+  <div class="ab-sub">Titluri UEFA Champions League ca antrenor — un record fără precedent</div>
+  <div class="ab-trophies">🏆🏆🏆🏆</div>
+</div>
+
+<!-- MANAGEMENT -->
+<section class="management-section">
+  <div class="sec-eye">Conducere Executivă</div>
+  <h2 class="sec-title">BOARDUL<br><span class="g">CLUBULUI</span></h2>
+  <div class="sec-rule"></div>
+  <div class="mgmt-grid">
+    <div class="mgmt-card">
+      <div class="mgmt-avatar">👔</div>
+      <div class="mgmt-info">
+        <div class="mgmt-name">Florentino Pérez</div>
+        <div class="mgmt-role">Președinte</div>
+        <div class="mgmt-desc">La conducerea clubului din 2000 (cu o pauză 2006-2009). Sub mandatul său, Real Madrid a câștigat 8 titluri în Champions League. Arhitectul proiectului Galácticos și al renovării Bernabéului.</div>
+      </div>
+    </div>
+    <div class="mgmt-card">
+      <div class="mgmt-avatar">⚽</div>
+      <div class="mgmt-info">
+        <div class="mgmt-name">Emilio Butragueño</div>
+        <div class="mgmt-role">Director Relații Instituționale</div>
+        <div class="mgmt-desc">Legendă a clubului ca jucător, „El Buitre" conduce relațiile cu FIFA, UEFA și alte federații. Fața diplomatică a clubului în negocierile internaționale.</div>
+      </div>
+    </div>
+    <div class="mgmt-card">
+      <div class="mgmt-avatar">💼</div>
+      <div class="mgmt-info">
+        <div class="mgmt-name">José Ángel Sánchez</div>
+        <div class="mgmt-role">Director General</div>
+        <div class="mgmt-desc">Responsabil cu toate operațiunile zilnice ale clubului, negocierile comerciale și parteneriatele de sponsorizare. Gestionează un buget de peste 800M €/an.</div>
+      </div>
+    </div>
+    <div class="mgmt-card">
+      <div class="mgmt-avatar">🔍</div>
+      <div class="mgmt-info">
+        <div class="mgmt-name">Juni Calafat</div>
+        <div class="mgmt-role">Director Scouting</div>
+        <div class="mgmt-desc">Omul din spatele transferurilor Bellingham, Tchouaméni și Vinicius Jr. Rețea globală de scouting în 40+ țări. Responsabil pentru identificarea viitoarelor staruri ale lui Real Madrid.</div>
+      </div>
+    </div>
+    <div class="mgmt-card">
+      <div class="mgmt-avatar">📊</div>
+      <div class="mgmt-info">
+        <div class="mgmt-name">Celso Rodríguez</div>
+        <div class="mgmt-role">Director Financiar</div>
+        <div class="mgmt-desc">Gestionează finanțele unuia dintre cele mai valoroase cluburi din lume (valoare estimată: 6,07 miliarde $). Coordonează finanțarea renovării Bernabéului.</div>
+      </div>
+    </div>
+    <div class="mgmt-card">
+      <div class="mgmt-avatar">📱</div>
+      <div class="mgmt-info">
+        <div class="mgmt-name">Comunicare & Marketing</div>
+        <div class="mgmt-role">Departament Digital</div>
+        <div class="mgmt-desc">Echipă de 30+ persoane care gestionează cea mai urmărită pagină de Facebook din sport (116M followers) și 38M+ abonați YouTube. Real Madrid — lider absolut în social media sportiv.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">🎩 STAFF REAL MADRID</div>
+  <div class="footer-text">Conducere & Tehnică 2023/24</div>
+  <div style="font-size:18px;letter-spacing:4px">🏆👑⭐</div>
+</footer>
+
+<script>
+  const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  document.addEventListener('mousemove',e=>{
+    cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px';
+    setTimeout(()=>{ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';},80);
+  });
+</script>
+</body>
+</html>

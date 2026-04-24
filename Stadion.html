@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stadion — Santiago Bernabéu</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C8A84B;
+    --gold-dim: #8A6E2A;
+    --white: #F8F4EC;
+    --black: #050505;
+    --dark: #0D0D0D;
+    --mid: #1A1A1A;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body { background:var(--black); color:var(--white); font-family:'Rajdhani',sans-serif; overflow-x:hidden; cursor:none; }
+
+  .cursor { position:fixed;width:10px;height:10px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference; }
+  .cursor-ring { position:fixed;width:34px;height:34px;border:1px solid rgba(200,168,75,.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all .1s ease; }
+
+  nav {
+    position:fixed;top:0;left:0;right:0;z-index:1000;
+    padding:0 60px;height:72px;
+    display:flex;justify-content:space-between;align-items:center;
+    background:rgba(5,5,5,.88);backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(200,168,75,.08);
+  }
+  .nav-logo { font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;color:var(--gold);text-decoration:none; }
+  .nav-center { display:flex;gap:2px;background:rgba(255,255,255,.03);border:1px solid rgba(200,168,75,.1);padding:4px;border-radius:2px; }
+  .nav-center a { font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.45);text-decoration:none;padding:8px 22px;transition:color .2s,background .2s;cursor:none;border-radius:1px; }
+  .nav-center a:hover,.nav-center a.active { color:var(--gold);background:rgba(200,168,75,.08); }
+  .nav-back { font-size:11px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.35);text-decoration:none;transition:color .2s;cursor:none; }
+  .nav-back:hover { color:var(--gold); }
+
+  /* HERO */
+  .page-hero {
+    min-height:100vh;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    padding:0 10% 80px;
+    position:relative;overflow:hidden;
+    background:#050505;
+  }
+  .page-hero-bg {
+    position:absolute;inset:0;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 60%, rgba(200,168,75,.05) 0%, transparent 70%),
+      linear-gradient(to bottom, rgba(0,0,0,.3) 0%, rgba(0,0,0,.8) 100%);
+  }
+
+  /* Stadium silhouette SVG */
+  .stadium-svg-wrap {
+    position:absolute;inset:0;
+    display:flex;align-items:center;justify-content:center;
+    opacity:.08;
+    pointer-events:none;
+  }
+
+  .page-hero-eyebrow {
+    position:relative;z-index:2;
+    font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);
+    margin-bottom:14px;
+    animation: fadeUp .8s ease both;
+  }
+  .page-hero-title {
+    position:relative;z-index:2;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(60px,9vw,130px);
+    line-height:.88;
+    letter-spacing:2px;
+    animation: fadeUp .8s ease .15s both;
+  }
+  .page-hero-title .g { color:var(--gold); }
+  .page-hero-title .outline { -webkit-text-stroke:1px rgba(248,244,236,.2);color:transparent; }
+  .page-hero-sub {
+    position:relative;z-index:2;
+    font-family:'Cormorant Garamond',serif;
+    font-size:18px;font-style:italic;font-weight:300;
+    color:rgba(248,244,236,.4);
+    margin-top:20px;line-height:1.7;max-width:500px;
+    animation: fadeUp .8s ease .3s both;
+  }
+  .hero-rule { position:relative;z-index:2;width:60px;height:1px;background:var(--gold-dim);margin-top:30px;animation:fadeUp .8s ease .4s both; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+
+  /* STATS BAR */
+  .stats-bar {
+    background:var(--mid);
+    border-bottom:1px solid rgba(200,168,75,.1);
+    display:grid;grid-template-columns:repeat(4,1fr);
+  }
+  .stats-bar-item {
+    padding:32px 24px;text-align:center;
+    border-right:1px solid rgba(200,168,75,.08);
+    transition:background .3s;
+  }
+  .stats-bar-item:last-child { border-right:none; }
+  .stats-bar-item:hover { background:rgba(200,168,75,.04); }
+  .stats-bar-num { font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1; }
+  .stats-bar-label { font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(248,244,236,.35);margin-top:6px; }
+
+  /* SECTIONS */
+  .content-section { padding:100px 10%; }
+  .content-section.alt { background:var(--dark); }
+
+  .sec-eye { font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--gold);margin-bottom:14px; }
+  .sec-title { font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,80px);line-height:.9;letter-spacing:2px;margin-bottom:32px; }
+  .sec-title .g { color:var(--gold); }
+  .sec-rule { width:50px;height:1px;background:var(--gold-dim);margin-bottom:36px; }
+  .sec-body { font-size:16px;line-height:1.8;color:rgba(248,244,236,.55);max-width:680px; }
+
+  /* Grid layout for text+visual */
+  .two-col { display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center; }
+  .two-col.rev { direction:rtl; }
+  .two-col.rev > * { direction:ltr; }
+
+  /* Visual boxes */
+  .visual-box {
+    background:var(--mid);
+    border:1px solid rgba(200,168,75,.08);
+    height:340px;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;overflow:hidden;
+    font-size:100px;
+  }
+  .visual-box::before {
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(200,168,75,.06), transparent);
+  }
+  .visual-box-label {
+    position:absolute;bottom:0;left:0;right:0;
+    background:linear-gradient(to top, rgba(0,0,0,.9), transparent);
+    padding:20px;text-align:center;
+    font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--gold);
+  }
+
+  /* Feature list */
+  .feature-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:60px; }
+  .feature-item {
+    background:var(--mid);
+    padding:36px 28px;
+    border-bottom:2px solid transparent;
+    transition:border-color .3s,background .3s;
+    cursor:none;
+  }
+  .feature-item:hover { border-color:var(--gold);background:rgba(200,168,75,.03); }
+  .feature-icon { font-size:32px;margin-bottom:14px; }
+  .feature-title { font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--gold);margin-bottom:8px; }
+  .feature-desc { font-size:13px;line-height:1.7;color:rgba(248,244,236,.45); }
+
+  /* Capacity ring visual */
+  .ring-visual {
+    position:relative;width:280px;height:280px;margin:0 auto;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ring-visual svg { position:absolute;top:0;left:0;width:100%;height:100%; }
+  .ring-center { text-align:center;position:relative;z-index:1; }
+  .ring-num { font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--gold);line-height:1; }
+  .ring-label { font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(248,244,236,.4);margin-top:4px; }
+
+  /* History timeline */
+  .hist-list { margin-top:50px; }
+  .hist-item {
+    display:flex;gap:28px;align-items:flex-start;
+    padding:24px 0;
+    border-bottom:1px solid rgba(200,168,75,.07);
+  }
+  .hist-year {
+    font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);
+    width:90px;flex-shrink:0;line-height:1;
+  }
+  .hist-body {}
+  .hist-event { font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;margin-bottom:4px; }
+  .hist-detail { font-size:13px;color:rgba(248,244,236,.4);line-height:1.6; }
+
+  /* Quote */
+  .quote-block {
+    border-left:2px solid var(--gold);
+    padding:24px 36px;
+    margin:60px 0;
+    background:rgba(200,168,75,.03);
+  }
+  .quote-text { font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;font-weight:300;line-height:1.6;color:rgba(248,244,236,.7); }
+  .quote-author { font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-top:14px; }
+
+  footer { background:var(--black);border-top:1px solid rgba(200,168,75,.1);padding:36px 10%;display:flex;justify-content:space-between;align-items:center; }
+  .footer-logo { font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;color:var(--gold); }
+  .footer-text { font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(248,244,236,.25); }
+
+  @media(max-width:768px){
+    nav{padding:0 20px;}
+    .nav-center{display:none;}
+    .two-col{grid-template-columns:1fr;}
+    .feature-grid{grid-template-columns:1fr;}
+    .stats-bar{grid-template-columns:repeat(2,1fr);}
+    footer{flex-direction:column;gap:14px;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a class="nav-logo" href="ai.html">⚽ REAL MADRID</a>
+  <div class="nav-center">
+    <a href="stadion.html" class="active">Stadion</a>
+    <a href="lot.html">Lot</a>
+    <a href="staff.html">Staff</a>
+  </div>
+  <a class="nav-back" href="index.html">← Înapoi</a>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="stadium-svg-wrap">
+    <svg width="900" height="400" viewBox="0 0 900 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Stadium outline silhouette -->
+      <ellipse cx="450" cy="280" rx="420" ry="60" stroke="#C8A84B" stroke-width="2" fill="none"/>
+      <ellipse cx="450" cy="220" rx="380" ry="50" stroke="#C8A84B" stroke-width="1.5" fill="none"/>
+      <ellipse cx="450" cy="160" rx="340" ry="40" stroke="#C8A84B" stroke-width="1" fill="none"/>
+      <line x1="30" y1="280" x2="30" y2="120" stroke="#C8A84B" stroke-width="1.5"/>
+      <line x1="870" y1="280" x2="870" y2="120" stroke="#C8A84B" stroke-width="1.5"/>
+      <path d="M30 120 Q450 20 870 120" stroke="#C8A84B" stroke-width="2" fill="none"/>
+      <!-- Roof lines -->
+      <line x1="30" y1="120" x2="70" y2="280" stroke="#C8A84B" stroke-width=".8" opacity=".5"/>
+      <line x1="870" y1="120" x2="830" y2="280" stroke="#C8A84B" stroke-width=".8" opacity=".5"/>
+      <!-- Tier marks -->
+      <line x1="70" y1="220" x2="830" y2="220" stroke="#C8A84B" stroke-width=".6" opacity=".3"/>
+      <line x1="110" y1="160" x2="790" y2="160" stroke="#C8A84B" stroke-width=".6" opacity=".3"/>
+    </svg>
+  </div>
+  <div class="page-hero-eyebrow">Acasă · Madrid · Spania</div>
+  <h1 class="page-hero-title">
+    <span class="outline">SANTIAGO</span><br>
+    <span class="g">BERNABÉU</span>
+  </h1>
+  <p class="page-hero-sub">
+    Catedrala fotbalului mondial. Renovată, reinventată, neînduplecată. Un stadion care respiră istorie la fiecare meeci.
+  </p>
+  <div class="hero-rule"></div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar">
+  <div class="stats-bar-item">
+    <div class="stats-bar-num">81.044</div>
+    <div class="stats-bar-label">Capacitate</div>
+  </div>
+  <div class="stats-bar-item">
+    <div class="stats-bar-num">1947</div>
+    <div class="stats-bar-label">Inaugurat</div>
+  </div>
+  <div class="stats-bar-item">
+    <div class="stats-bar-num">2023</div>
+    <div class="stats-bar-label">Renovare finalizată</div>
+  </div>
+  <div class="stats-bar-item">
+    <div class="stats-bar-num">5</div>
+    <div class="stats-bar-label">Finale UCL găzduite</div>
+  </div>
+</div>
+
+<!-- RENOVAREA -->
+<section class="content-section">
+  <div class="two-col">
+    <div>
+      <div class="sec-eye">Proiect · 2019 – 2023</div>
+      <h2 class="sec-title">RENOVAREA<br><span class="g">MONUMENTULUI</span></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-body">
+        Lucrările de renovare au transformat Bernabéul într-una din cele mai moderne arene din lume. Acoperișul retractabil din oțel și sticlă, noile tribune, sistemul de iluminat LED și experiența fanilor au fost complet reinventate. Investiția totală a depășit 1,07 miliarde de euro.
+      </p>
+      <div class="quote-block">
+        <div class="quote-text">"Nu renovăm un stadion. Construim viitorul fotbalului."</div>
+        <div class="quote-author">Florentino Pérez, Președinte Real Madrid</div>
+      </div>
+      <p class="sec-body">
+        Noul Bernabéu include o suprafață verde retractabilă, un teren de fotbal care poate fi scos din stadion pentru a permite alte evenimente, și o fațadă externă cu LED-uri ce poate afișa imagini și animații.
+      </p>
+    </div>
+    <div>
+      <div class="visual-box">
+        <span style="position:relative;z-index:1">🏟️</span>
+        <div class="visual-box-label">Fațada LED · 2023</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="content-section alt">
+  <div class="sec-eye">Infrastructură</div>
+  <h2 class="sec-title">DOTĂRILE<br><span class="g">STADIONULUI</span></h2>
+  <div class="sec-rule"></div>
+  <div class="feature-grid">
+    <div class="feature-item">
+      <div class="feature-icon">🌧️</div>
+      <div class="feature-title">Acoperiș Retractabil</div>
+      <div class="feature-desc">Sistemul de acoperiș din oțel poate fi deschis sau închis în funcție de condițiile meteo, asigurând confort maxim fanilor.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🌿</div>
+      <div class="feature-title">Gazon Mobil</div>
+      <div class="feature-desc">Suprafața de joc poate fi scoasă complet din stadion, transformând arena pentru concerte, evenimente sau spectacole.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">💡</div>
+      <div class="feature-title">Fațadă LED</div>
+      <div class="feature-desc">Învelișul exterior din 110.000 m² de material LED poate afișa animații spectaculoase vizibile de la distanță.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🎭</div>
+      <div class="feature-title">Muzeu & Turnee</div>
+      <div class="feature-desc">Muzeul Real Madrid din cadrul stadionului este cel mai vizitat muzeu sportiv din Europa, cu 1,5 milioane de vizitatori anual.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">🍽️</div>
+      <div class="feature-title">Gastronomie Premium</div>
+      <div class="feature-desc">Restaurante și zone VIP reinventate, cu 40+ puncte de alimentație distribuite pe toate nivelurile stadionului.</div>
+    </div>
+    <div class="feature-item">
+      <div class="feature-icon">📱</div>
+      <div class="feature-title">Conectivitate 5G</div>
+      <div class="feature-desc">Acoperire completă 5G în tot stadionul, aplicație mobilă de navigare internă și streaming live pe ecranele personale.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPACITATE -->
+<section class="content-section">
+  <div class="two-col rev">
+    <div>
+      <div class="sec-eye">Date tehnice</div>
+      <h2 class="sec-title">CAPACITATE &amp;<br><span class="g">ARHITECTURĂ</span></h2>
+      <div class="sec-rule"></div>
+      <p class="sec-body">
+        Cu 81.044 de locuri, Bernabéul este cel mai mare stadion din Spania. Tribuna de est „Palco de Honor" găzduiește loji VIP și tribune oficiale. Cele 4 niveluri de tribune oferă vizibilitate perfectă din orice unghi, iar distanța minimă de la primul rând la teren este de doar 7 metri.
+      </p>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center">
+      <div class="ring-visual">
+        <svg viewBox="0 0 280 280">
+          <circle cx="140" cy="140" r="120" fill="none" stroke="rgba(200,168,75,.1)" stroke-width="20"/>
+          <circle cx="140" cy="140" r="120" fill="none" stroke="var(--gold)" stroke-width="20"
+            stroke-dasharray="691" stroke-dashoffset="70"
+            stroke-linecap="round" transform="rotate(-90 140 140)"/>
+          <circle cx="140" cy="140" r="90" fill="none" stroke="rgba(200,168,75,.06)" stroke-width="14"/>
+          <circle cx="140" cy="140" r="90" fill="none" stroke="rgba(200,168,75,.3)" stroke-width="14"
+            stroke-dasharray="565" stroke-dashoffset="80"
+            stroke-linecap="round" transform="rotate(-90 140 140)"/>
+        </svg>
+        <div class="ring-center">
+          <div class="ring-num">81K</div>
+          <div class="ring-label">Locuri</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section class="content-section alt">
+  <div class="sec-eye">Cronologie</div>
+  <h2 class="sec-title">ISTORIA<br><span class="g">BERNABÉULUI</span></h2>
+  <div class="sec-rule"></div>
+  <div class="hist-list">
+    <div class="hist-item">
+      <div class="hist-year">1947</div>
+      <div class="hist-body">
+        <div class="hist-event">Inaugurarea stadionului</div>
+        <div class="hist-detail">Stadionul Nuevo Chamartín este inaugurat pe 14 decembrie 1947, în fața a 75.000 de spectatori, la un meci contra FC Zaragoza. Costul inițial: 83 milioane de pesete.</div>
+      </div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-year">1955</div>
+      <div class="hist-body">
+        <div class="hist-event">Redenumit Santiago Bernabéu</div>
+        <div class="hist-detail">Stadionul primește numele legendarul președinte Santiago Bernabéu Yeste, arhitectul epocii de aur a clubului.</div>
+      </div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-year">1982</div>
+      <div class="hist-body">
+        <div class="hist-event">Finala Campionatului Mondial</div>
+        <div class="hist-detail">Bernabéul găzduiește finala Cupei Mondiale FIFA 1982 — Italia vs Germania de Vest, 3-1. Capacitate: 90.000 spectatori.</div>
+      </div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-year">2019</div>
+      <div class="hist-body">
+        <div class="hist-event">Startul Renovării Masive</div>
+        <div class="hist-detail">Lucrările de transformare încep în august 2019. Echipa joacă pe teren propriu pe parcursul construcției, una dintre cele mai complexe renovări din istoria fotbalului.</div>
+      </div>
+    </div>
+    <div class="hist-item">
+      <div class="hist-year">2023</div>
+      <div class="hist-body">
+        <div class="hist-event">Noul Bernabéu — Inaugurat</div>
+        <div class="hist-detail">Renovarea completă este finalizată. Stadionul devine una din cele mai avansate arene din lume, cu acoperiș retractabil, gazon mobil și fațadă LED de 110.000 m².</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">🏟️ SANTIAGO BERNABÉU</div>
+  <div class="footer-text">Real Madrid CF · Madrid, Spania</div>
+  <div style="font-size:18px;letter-spacing:4px">⚽👑🏆</div>
+</footer>
+
+<script>
+  const cur = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX+'px'; cur.style.top = e.clientY+'px';
+    setTimeout(()=>{ ring.style.left=e.clientX+'px'; ring.style.top=e.clientY+'px'; },80);
+  });
+</script>
+</body>
+</html>
